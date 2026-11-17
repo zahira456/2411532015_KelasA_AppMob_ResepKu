@@ -35,15 +35,19 @@ class ResepKuApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         colorSchemeSeed: Colors.deepOrange,
+        fontFamily: 'Poppins',
       ),
       darkTheme: ThemeData(
         colorSchemeSeed: Colors.deepOrange,
         brightness: Brightness.dark,
+        fontFamily: 'Poppins',
       ),
       themeMode: themeProvider.themeMode,
       builder: (context, child) =>
           IdentityFooter(child: child!),
       home: const HomePage(),
     );
+    
   }
+  
 }

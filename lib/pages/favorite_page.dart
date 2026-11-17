@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import 'package:resepku/providers/favorite_provider.dart';
+import 'package:resepku/widgets/recipe_image.dart';
 
 class FavoritePage extends StatelessWidget {
   const FavoritePage({super.key});
@@ -75,20 +76,54 @@ class FavoritePage extends StatelessWidget {
             );
           }
 
-          return ListView(
-            children: [
-              for (final recipe in favorite.items)
-                ListTile(
-                  title: Text(recipe.name),
-                  subtitle: Text(recipe.cuisine),
-                  trailing: IconButton(
-                    icon: const Icon(Icons.delete_outline),
-                    onPressed: () {
-                      favorite.toggle(recipe);
-                    },
+          return ListView.separated(
+            itemCount: favorite.items.length,
+            separatorBuilder: (context, index) {
+              return const Divider(height: 1);
+            },
+            itemBuilder: (context, index) {
+              final recipe = favorite.items[index];
+
+              return Dismissible(
+                key: ValueKey(recipe.id),
+                direction: DismissDirection.endToStart,
+                background: Container(
+                  color: Colors.red,
+                  alignment: Alignment.centerRight,
+                  padding: const EdgeInsets.only(right: 20),
+                  child: const Icon(
+                    Icons.delete,
+                    color: Colors.white,
                   ),
                 ),
-            ],
+                onDismissed: (direction) {
+                  context.read<FavoriteProvider>().toggle(recipe);
+
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text(
+                        '${recipe.name} dihapus dari favorit',
+                      ),
+                    ),
+                  );
+                },
+                child: ListTile(
+                  leading: ClipRRect(
+                    borderRadius: BorderRadius.circular(8),
+                    child: SizedBox(
+                      width: 56,
+                      height: 56,
+                      child: RecipeImage(
+                        url: recipe.image,
+                        cacheWidth: 168,
+                      ),
+                    ),
+                  ),
+                  title: Text(recipe.name),
+                  subtitle: Text(recipe.cuisine),
+                ),
+              );
+            },
           );
         },
       ),
