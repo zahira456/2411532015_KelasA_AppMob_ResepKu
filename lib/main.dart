@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 import 'package:resepku/pages/home_page.dart';
 import 'package:resepku/providers/favorite_provider.dart';
 import 'package:resepku/providers/theme_provider.dart';
+import 'package:resepku/services/recipe_service.dart';
 import 'package:resepku/widgets/identity_footer.dart';
 
 void main() {
@@ -17,6 +18,10 @@ void main() {
         ChangeNotifierProvider(
           create: (context) => ThemeProvider(),
         ),
+        Provider(
+          create: (context) => RecipeService(),
+          dispose: (context, service) => service.close(),
+        ),
       ],
       child: const ResepKuApp(),
     ),
@@ -28,8 +33,7 @@ class ResepKuApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final themeProvider = context.watch<ThemeProvider>();
-
+    
     return MaterialApp(
       title: 'ResepKu',
       debugShowCheckedModeBanner: false,
@@ -42,7 +46,7 @@ class ResepKuApp extends StatelessWidget {
         brightness: Brightness.dark,
         fontFamily: 'Poppins',
       ),
-      themeMode: themeProvider.themeMode,
+      themeMode: context.watch<ThemeProvider>().themeMode,
       builder: (context, child) =>
           IdentityFooter(child: child!),
       home: const HomePage(),
